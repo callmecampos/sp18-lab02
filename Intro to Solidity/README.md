@@ -1,3 +1,5 @@
+# Felipe Rocha Campos (3032752530) and Drew Kaul (3032680315)
+
 # Simple Solidity Exercises
 
 *   A ‘greeter’ contract with a 'greet' method that returns the string “hello, World!”
