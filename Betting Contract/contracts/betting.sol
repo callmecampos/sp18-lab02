@@ -5,7 +5,7 @@ contract Betting {
     function Betting(uint[] _outcomes) public {
       owner = msg.sender;
       outcomesCount = _outcomes.length;
-      for (int i = 0; i < _outcomes.length; i += 1) {
+      for (uint i = 0; i < _outcomes.length; i += 1) {
         outcomes[i] = _outcomes[i];
       }
     }
@@ -51,8 +51,8 @@ contract Betting {
       _;
     }
     modifier outcomeExists(uint outcome) {
-      for (int i = 0; i < outcomesCount; i += 1) {
-        if (outcome[i] == outcome) {
+      for (uint i = 0; i < outcomesCount; i += 1) {
+        if (outcomes[i] == outcome) {
           require(true);
         }
       }
@@ -67,21 +67,21 @@ contract Betting {
 
     /* Gamblers place their bets, preferably after calling checkOutcomes */
     function makeBet(uint _outcome) public payable returns (bool) {
-      if (oracle == null) {
-        revert('')
+      if (oracle == 0) {
+        revert(); // 'No oracle has been initialized, please try again once the owner has chosen an oracle.'
       }
 
-      if (gamblerA == null) {
+      if (gamblerA == 0) {
         gamblerA = msg.sender;
-      } else if (gamblerB == null) {
+      } else if (gamblerB == 0) {
         gamblerB = msg.sender;
         BetClosed();
       } else {
-        revert('There are already two gamblers, please try again once winnings are dispersed.');
+        revert(); // 'There are already two gamblers, please try again once winnings are dispersed.'
         return false;
       }
 
-      bets[msg.sender] = new Bet(_outcome, msg.value, true);
+      bets[msg.sender] = Bet(_outcome, msg.value, true);
 
       BetMade(msg.sender);
       return true;
@@ -90,17 +90,19 @@ contract Betting {
     /* The oracle chooses which outcome wins */
     function makeDecision(uint _outcome) public oracleOnly() outcomeExists(_outcome) {
       uint pot = bets[gamblerA].amount + bets[gamblerB].amount;
-      if ((bets[gamblerA] == _outcome) && (bets[gamblerB] == _outcome){
+      uint outA = bets[gamblerA].outcome;
+      uint outB = bets[gamblerB].outcome;
+      if ((outA == _outcome) && (outB == _outcome)) {
         winnings[gamblerA] = pot / 2.0;
         winnings[gamblerB] = pot / 2.0;
-      } else if (bets[gamblerA] == _outcome) {
+      } else if (outA == _outcome) {
         winnings[gamblerA] = pot;
-      } else if (bets[gamblerB] == _outcome) {
+      } else if (outB == _outcome) {
         winnings[gamblerB] = pot;
       }
 
-      gamblerA = null;
-      gamblerB = null;
+      gamblerA = 0;
+      gamblerB = 0;
     }
 
     /* Allow anyone to withdraw their winnings safely (if they have enough) */
@@ -118,8 +120,8 @@ contract Betting {
 
     /* Allow anyone to check the outcomes they can bet on */
     function checkOutcomes(uint outcome) public view returns (uint) {
-      for (int i = 0; i < outcomesCount; i += 1) {
-        if (outcome[i] == outcome) {
+      for (uint i = 0; i < outcomesCount; i += 1) {
+        if (outcomes[i] == outcome) {
           return 1;
         }
       }
@@ -133,8 +135,8 @@ contract Betting {
 
     /* Call delete() to reset certain state variables. Which ones? That's upto you to decide */
     function contractReset() public ownerOnly() {
-      oracle.delete();
-      gamblerA.delete();
-      gamblerB.delete();
+      delete(oracle);
+      delete(gamblerA);
+      delete(gamblerB);
     }
 }
