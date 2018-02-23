@@ -4,6 +4,7 @@ contract Betting {
     /* Constructor function, where owner and outcomes are set */
     function Betting(uint[] _outcomes) public {
       owner = msg.sender;
+      outcomesCount = _outcomes.length;
       for (int i = 0; i < _outcomes.length; i += 1) {
         outcomes[i] = _outcomes[i];
       }
@@ -34,6 +35,8 @@ contract Betting {
     /* Keep track of all outcomes (maps index to numerical outcome) */
     mapping (uint => uint) public outcomes;
 
+    uint public outcomesCount;
+
     /* Add any events you think are necessary */
     event BetMade(address gambler);
     event BetClosed();
@@ -48,8 +51,12 @@ contract Betting {
       _;
     }
     modifier outcomeExists(uint outcome) {
-
-      require(outcomes[].isValue); // FIXME:
+      for (int i = 0; i < outcomesCount; i += 1) {
+        if (outcome[i] == outcome) {
+          require(true);
+        }
+      }
+      require(false);
       _;
     }
 
@@ -65,18 +72,19 @@ contract Betting {
       } else if (gamblerB == null) {
         gamblerB = msg.sender;
       } else {
-        revert();
-        gamblerA = msg.sender;
+        revert('There are already two gamblers, please try again once winnings are dispersed.');
+        return false;
       }
 
       bets[msg.sender] = new Bet(_outcome, msg.value, true);
 
       BetMade(msg.sender);
+      return true;
     }
 
     /* The oracle chooses which outcome wins */
     function makeDecision(uint _outcome) public oracleOnly() outcomeExists(_outcome) {
-      //
+      if bets[gamblerA]
     }
 
     /* Allow anyone to withdraw their winnings safely (if they have enough) */
