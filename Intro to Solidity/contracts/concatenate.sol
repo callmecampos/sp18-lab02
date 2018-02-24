@@ -3,8 +3,8 @@ pragma solidity 0.4.19;
 
 contract Concatenate {
     function concatWithoutImport(string _s, string _t) public returns (string) {
-      bytes memory aBytes = bytes(a);
-      bytes memory bBytes = bytes(b);
+      bytes memory aBytes = bytes(_s);
+      bytes memory bBytes = bytes(_t);
       string memory ab = new string(aBytes.length + bBytes.length);
       bytes memory resultBytes = bytes(ab);
 
@@ -21,5 +21,6 @@ contract Concatenate {
 
     /* BONUS */
     function concatWithImport(string s, string t) public returns (string) {
+      return s;
     }
 }

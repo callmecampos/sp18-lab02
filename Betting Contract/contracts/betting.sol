@@ -63,6 +63,7 @@ contract Betting {
     /* Owner chooses their trusted Oracle */
     function chooseOracle(address _oracle) public ownerOnly() returns (address) {
       oracle = _oracle;
+      return oracle;
     }
 
     /* Gamblers place their bets, preferably after calling checkOutcomes */
@@ -120,12 +121,11 @@ contract Betting {
 
     /* Allow anyone to check the outcomes they can bet on */
     function checkOutcomes(uint outcome) public view returns (uint) {
-      for (uint i = 0; i < outcomesCount; i += 1) {
-        if (outcomes[i] == outcome) {
-          return 1;
-        }
+      if (outcome < outcomesCount) {
+        return outcomes[outcome];
+      } else {
+        return 0;
       }
-      return 0;
     }
 
     /* Allow anyone to check if they won any bets */

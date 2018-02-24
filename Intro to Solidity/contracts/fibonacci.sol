@@ -8,7 +8,7 @@ contract Fibonacci {
         return n;
       }
 
-      return fib(n-1) + fib(n-2);
+      return fibRecur(n-1) + fibRecur(n-2);
     }
 
     /* Carry out calculations to find the nth Fibonacci number */
